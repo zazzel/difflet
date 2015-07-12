@@ -66,7 +66,7 @@ test('diffing nested array with added values', function (t) {
       }
     }
   };
-
+  
   var d = diff.compare(subjectA, subjectB);
   t.equal(d, "{\"levelOne\":{\"levelTwo\":{\"array\":[\"a\",\u001b[32m\u001b[1m\"b\"\u001b[0m,\u001b[32m\u001b[1m3\u001b[0m]}}}");
 });
