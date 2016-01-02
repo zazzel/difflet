@@ -1,6 +1,7 @@
 var traverse = require('traverse');
 var Stream = require('stream').Stream;
 var charm = require('charm');
+var defaultDeepEqual = require('deep-is');
 
 var exports = module.exports = function (opts_) {
     var fn = difflet.bind(null, opts_);
@@ -36,7 +37,7 @@ function difflet (opts, prev, next) {
     }
     if (!opts) opts = {};
 
-    var deepEqual = opts.deepEqual || require('deep-is');
+    var deepEqual = opts.deepEqual || defaultDeepEqual;
 
     if (opts.start === undefined && opts.stop === undefined) {
         var c = charm(stream);
