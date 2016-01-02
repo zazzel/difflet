@@ -81,6 +81,12 @@ function difflet (opts, prev, next) {
     function stringifier (insertable, node, opts) {
         var indent = opts.indent;
         
+        var writeObj = function(obj) {
+            traverse(obj).forEach(function (x) {
+                plainStringify.call(this, x, { indent : indent });
+            });
+        };
+
         if (insertable) {
             var prevNode = traverse.get(prev, this.path || []);
         }
@@ -108,6 +114,18 @@ function difflet (opts, prev, next) {
                 indent = 0;
             }
             
+            if (Array.isArray(prevNode) && node.length != prevNode.length && node.length == 0) {
+                write('[\n');
+
+                set('deleted');
+                prevNode.forEach(function(obj, i) {
+                    if(i != 0) write(', ');
+                    writeObj(obj);
+                });
+                unset('deleted');
+                return write(indentx + '\n]');
+            }
+
             this.before(function () {
                 if (inserted) set('inserted');
                 if (indent && commaFirst) {
@@ -136,9 +154,7 @@ function difflet (opts, prev, next) {
                 ) {
                     set('comment');
                     write(' // != ');
-                    traverse(prev).forEach(function (x) {
-                        plainStringify.call(this, x, { indent : 0 });
-                    });
+                    traverse(prev).forEach(writeObj);
                     unset('comment');
                 }
                 
@@ -150,6 +166,19 @@ function difflet (opts, prev, next) {
                         write('\n' + indentx);
                     }
                 }
+                else {
+                    if(prevNode && prevNode.length > child.parent.node.length) {
+                        var missingItems = prevNode.slice(child.key + 1);
+
+                        set('deleted');
+                        missingItems.forEach(function(item) {
+                            write(', ');
+                            writeObj(item);
+                        });
+                        unset('deleted');
+                    }
+                }
+
             });
             
             this.after(function () {
