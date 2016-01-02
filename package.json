@@ -1,7 +1,7 @@
 {
     "name" : "difflet",
     "description" : "colorful diffs for javascript objects",
-    "version" : "0.2.6",
+    "version" : "1.0.0",
     "repository" : {
         "type" : "git",
         "url" : "git://github.com/substack/difflet.git"
